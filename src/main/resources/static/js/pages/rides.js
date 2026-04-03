@@ -14,9 +14,9 @@ const RidesPage = {
         const lastPrice = Store.getLastPetrolPrice();
         const defaultGroup = groups.length === 1 ? groups[0].id : '';
 
-        const bikeOptions = bikes.map(b =>
+        const bikeOptions = bikes.length > 0 ? bikes.map(b =>
             `<option value="${b.id}" data-owner="${b.owner.id}" data-owner-name="${b.owner.name}" data-mileage="${b.fuelEfficiency}">${b.name} (${b.owner.name})</option>`
-        ).join('');
+        ).join('') : '';
 
         const groupPlaceholder = groups.length > 1
             ? '<option value="" disabled selected>Select a group</option>' : '';
@@ -32,7 +32,7 @@ const RidesPage = {
                     <div class="form-row">
                         <div class="form-group">
                             <label>Bike</label>
-                            <select id="ride-bike">${bikes.length ? bikeOptions : '<option>No bikes registered</option>'}</select>
+                            <select id="ride-bike" ${!bikes.length ? 'disabled' : ''}>${bikes.length ? bikeOptions : '<option value="">No bikes registered</option>'}</select>
                         </div>
                         <div class="form-group">
                             <label>Group *</label>
@@ -75,7 +75,9 @@ const RidesPage = {
                         </div>
                     </div>
                     <div id="cost-preview"></div>
-                    <button type="submit" class="btn btn-primary" style="margin-top:16px;width:100%;">Log Ride</button>
+                    <div class="btn-center" style="margin-top:16px;">
+                        <button type="submit" class="btn btn-primary" ${!bikes.length ? 'disabled' : ''}>Log Ride</button>
+                    </div>
                 </form>
             </div>
             <div class="card" style="margin-top:24px;">
@@ -167,16 +169,24 @@ const RidesPage = {
 
     updateBikeInfo() {
         const select = document.getElementById('ride-bike');
-        if (!select || !select.selectedOptions[0]) return;
-        const opt = select.selectedOptions[0];
         const info = document.getElementById('bike-info');
+        if (!select || !select.selectedOptions[0] || !select.selectedOptions[0].dataset.ownerName) {
+            info.innerHTML = this.bikes.length === 0
+                ? '<span style="color:var(--danger);">Please register a bike first before logging rides.</span>'
+                : '';
+            return;
+        }
+        const opt = select.selectedOptions[0];
         info.innerHTML = `Owner: <strong>${opt.dataset.ownerName}</strong> &nbsp;|&nbsp; Mileage: <strong>${opt.dataset.mileage} km/l</strong>`;
     },
 
     updatePreview() {
         const previewEl = document.getElementById('cost-preview');
         const bikeSelect = document.getElementById('ride-bike');
-        if (!bikeSelect || !bikeSelect.selectedOptions[0]) return;
+        if (!bikeSelect || !bikeSelect.selectedOptions[0] || !bikeSelect.selectedOptions[0].dataset.mileage) {
+            if (previewEl) previewEl.innerHTML = '';
+            return;
+        }
 
         const mileage = parseFloat(bikeSelect.selectedOptions[0].dataset.mileage);
         const distance = parseFloat(document.getElementById('ride-distance')?.value) || 0;

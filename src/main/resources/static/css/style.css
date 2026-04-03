@@ -219,6 +219,14 @@ body {
     color: white;
 }
 
+.btn-center {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
 /* ── Forms ── */
 .form-group {
     margin-bottom: 16px;
@@ -386,6 +394,44 @@ tbody tr:hover {
 .balance-amount.positive {
     color: var(--success);
 }
+
+.balance-row.bal-receiving {
+    border-left: 4px solid var(--success);
+}
+
+.balance-row.bal-owing {
+    border-left: 4px solid var(--danger);
+}
+
+.balance-row.bal-others {
+    border-left: 4px solid #1976D2;
+}
+
+.balance-legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.balance-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.legend-dot.green { background: var(--success); }
+.legend-dot.red { background: var(--danger); }
+.legend-dot.blue { background: #1976D2; }
 
 /* ── Cost Preview ── */
 .cost-preview {

@@ -42,7 +42,9 @@ const ExpensesPage = {
                         <div class="checkbox-group" id="exp-split"></div>
                         <p id="exp-hint" style="color:var(--text-secondary);font-size:13px;margin-top:6px;"></p>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top:8px;width:100%;">Add Expense</button>
+                    <div class="btn-center" style="margin-top:8px;">
+                        <button type="submit" class="btn btn-primary">Add Expense</button>
+                    </div>
                 </form>
             </div>
             <div class="card" style="margin-top:24px;">

@@ -1,6 +1,7 @@
 package com.jk.miniproject.RideFair.service;
 
 import com.jk.miniproject.RideFair.dto.request.CreateGroupRequest;
+import com.jk.miniproject.RideFair.dto.response.BalanceResponse;
 import com.jk.miniproject.RideFair.dto.response.GroupResponse;
 import com.jk.miniproject.RideFair.entity.FriendGroup;
 import com.jk.miniproject.RideFair.entity.User;
@@ -19,6 +20,7 @@ public class GroupService {
 
     private final FriendGroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final BalanceService balanceService;
 
     public GroupResponse createGroup(CreateGroupRequest request) {
         List<User> members = userRepository.findAllById(request.getMemberIds());
@@ -53,6 +55,14 @@ public class GroupService {
     public GroupResponse removeMember(Long groupId, Long userId) {
         FriendGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Group not found with id: " + groupId));
+
+        List<BalanceResponse> balances = balanceService.getPairwiseBalances(groupId);
+        boolean hasDebt = balances.stream()
+                .anyMatch(b -> b.getFromUser().getId().equals(userId) || b.getToUser().getId().equals(userId));
+        if (hasDebt) {
+            throw new IllegalArgumentException("Cannot remove member with unsettled balances in this group. Please settle all debts first.");
+        }
+
         group.getMembers().removeIf(member -> member.getId().equals(userId));
         return GroupResponse.from(groupRepository.save(group));
     }

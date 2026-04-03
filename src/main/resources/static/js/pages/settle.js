@@ -39,7 +39,9 @@ const SettlePage = {
                             <input type="text" id="settle-note" placeholder="e.g. March settlement">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top:8px;width:100%;">Record Payment</button>
+                    <div class="btn-center" style="margin-top:8px;">
+                        <button type="submit" class="btn btn-primary">Record Payment</button>
+                    </div>
                 </form>
             </div>
             <div class="card" style="margin-top:24px;">

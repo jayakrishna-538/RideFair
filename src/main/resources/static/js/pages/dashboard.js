@@ -4,14 +4,6 @@ const DashboardPage = {
             <div class="page-header"><h1>Dashboard</h1></div>
             <div class="stat-cards" id="dash-stats"></div>
             <div class="card">
-                <h3>Quick Actions</h3>
-                <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
-                    <a href="#/rides" class="btn btn-primary">+ Log a Ride</a>
-                    <a href="#/expenses" class="btn btn-secondary">+ Add Expense</a>
-                    <a href="#/settle" class="btn btn-secondary">Settle Up</a>
-                </div>
-            </div>
-            <div class="card" style="margin-top:16px;">
                 <h3>Registered Members</h3>
                 <div id="dash-users" style="margin-top:12px;"></div>
                 <p style="color:var(--text-secondary);font-size:13px;margin-top:10px;">Friends can join by registering at the login page.</p>

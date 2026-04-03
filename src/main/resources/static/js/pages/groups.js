@@ -79,20 +79,29 @@ const GroupsPage = {
     },
 
     async showManageModal(groupId) {
-        const [group, allUsers] = await Promise.all([
+        const [group, allUsers, pairwise] = await Promise.all([
             API.get(`/groups/${groupId}`),
-            API.get('/users')
+            API.get('/users'),
+            API.get(`/balances/group/${groupId}`)
         ]);
         const memberIds = group.members.map(m => m.id);
         const nonMembers = allUsers.filter(u => !memberIds.includes(u.id));
 
+        const usersWithDebt = new Set();
+        pairwise.forEach(b => {
+            usersWithDebt.add(b.fromUser.id);
+            usersWithDebt.add(b.toUser.id);
+        });
+
         let html = '<h4 style="margin-bottom:8px;">Current Members</h4>';
-        html += group.members.map(m => `
+        html += group.members.map(m => {
+            const hasDebt = usersWithDebt.has(m.id);
+            return `
             <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
-                <span>${m.name}</span>
-                <button class="btn btn-sm btn-danger" onclick="GroupsPage.removeMember(${groupId}, ${m.id})">Remove</button>
-            </div>
-        `).join('');
+                <span>${m.name} ${hasDebt ? '<span style="color:var(--danger);font-size:12px;">(has unsettled balance)</span>' : ''}</span>
+                <button class="btn btn-sm btn-danger" ${hasDebt ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} onclick="GroupsPage.removeMember(${groupId}, ${m.id})">Remove</button>
+            </div>`;
+        }).join('');
 
         if (nonMembers.length > 0) {
             html += `<h4 style="margin-top:16px;margin-bottom:8px;">Add Members</h4>`;
@@ -104,7 +113,7 @@ const GroupsPage = {
             `).join('');
         }
 
-        Modal.show(`Manage: ${group.name}`, html, (overlay) => Modal.close(overlay));
+        Modal.show(`Manage: ${group.name}`, html, null, { hideSubmit: true });
     },
 
     async addMember(groupId, userId) {
@@ -122,6 +131,6 @@ const GroupsPage = {
             Toast.success('Member removed');
             document.querySelector('.modal-overlay')?.remove();
             await this.loadGroups();
-        } catch (e) { Toast.error('Failed to remove member'); }
+        } catch (e) { Toast.error(e.message || 'Failed to remove member'); }
     }
 };

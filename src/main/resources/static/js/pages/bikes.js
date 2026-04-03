@@ -2,7 +2,7 @@ const BikesPage = {
     async render(container) {
         container.innerHTML = `
             <div class="page-header">
-                <h1>Bikes</h1>
+                <h1>Registered Bikes</h1>
                 <button class="btn btn-primary" id="btn-new-bike">+ Register Bike</button>
             </div>
             <div class="card-grid" id="bikes-list"></div>
